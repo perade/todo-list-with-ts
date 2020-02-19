@@ -15,13 +15,13 @@
       <section class="main" v-show="todos.length" v-cloak>
         <ul class="todo-list">
           <li
-            v-for="todo in filteredTodos"
+            v-for="(todo, index) in filteredTodos"
             class="todo"
             :key="todo.id"
             :class="{ completed: todo.completed, editing: todo == editedTodo }"
           >
             <div class="view">
-              <input class="toggle" type="checkbox" :checked="todo.completed" @input="toggleStatus(todo.id, $event.target.checked)">
+              <input class="toggle" type="checkbox" :checked="todo.completed" @input="toggleStatus(index, todo.id, $event.target.checked)">
               <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
               <button class="destroy" @click="removeTodo(todo)"></button>
             </div>

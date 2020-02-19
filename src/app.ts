@@ -58,10 +58,8 @@ export const app = new Vue({
         }
       });
     },
-    toggleStatus: function (id: number, completed: boolean | string) {
-      console.log('id', id);
-      console.log('completed', completed);
-      this.todos[id].completed = completed;
+    toggleStatus: function (index: number, id: number, completed: boolean | string) {
+      this.todos[index !== id ? index : id].completed = completed;
       this.sortToDos();
       toDoStorage.save(this.todos);
     },
@@ -70,18 +68,18 @@ export const app = new Vue({
       if (!value) {
         return;
       }
-      // this.todos.push({
-      //   id: this.uid++,
-      //   title: value,
-      //   completed: false,
-      //   time: getCurrentTime()
-      // });
-      this.todos.unshift({
+      this.todos.push({
         id: this.uid++,
         title: value,
         completed: false,
         time: getCurrentTime()
       });
+      // this.todos.unshift({
+      //   id: this.uid++,
+      //   title: value,
+      //   completed: false,
+      //   time: getCurrentTime()
+      // });
       this.newTodo = '';
       this.sortToDos();
       toDoStorage.save(this.todos);
@@ -104,6 +102,7 @@ export const app = new Vue({
       if (!todo.title) {
         this.removeTodo(todo);
       }
+      toDoStorage.save(this.todos);
     },
     cancelEdit: function (todo: {title: string}) {
       this.editedTodo = null;
