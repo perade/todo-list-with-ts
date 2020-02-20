@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { ToDoList } from './storage';
 import { getCurrentTime, filters } from './utils';
+import { showToast } from './toast';
 
 const toDoStorage = new ToDoList();
 
@@ -10,7 +11,8 @@ export const app = new Vue({
     newTodo: '',
     editedTodo: null,
     visibility: 'all',
-    uid: toDoStorage.getUid()
+    uid: toDoStorage.getUid(),
+    toastMessage: ''
   },
   computed: {
     filteredTodos: function () {
@@ -18,6 +20,9 @@ export const app = new Vue({
     },
     remaining: function () {
       return filters[this.visibility](this.todos).length;
+    },
+    completedTodos: function () {
+      return filters.completed(this.todos).length;
     }
   },
   filters: {
@@ -39,6 +44,8 @@ export const app = new Vue({
       this.todos[index !== id ? index : id].completed = completed;
       this.sortToDos();
       toDoStorage.save(this.todos);
+      this.toastMessage = `Move to ${completed ? 'completed' : 'active'}!`;
+      showToast();
     },
     addTodo: function () {
       const value = this.newTodo;
@@ -54,11 +61,15 @@ export const app = new Vue({
       this.newTodo = '';
       this.sortToDos();
       toDoStorage.save(this.todos);
+      this.toastMessage = 'Add a TODO!';
+      showToast();
     },
     removeTodo: function (todo: {}) {
       this.todos.splice(this.todos.indexOf(todo), 1);
       this.sortToDos();
       toDoStorage.save(this.todos);
+      this.toastMessage = 'Remove a TODO!';
+      showToast();
     },
     editTodo: function (todo: {title: string}) {
       this.beforeEditCache = todo.title;
@@ -74,6 +85,8 @@ export const app = new Vue({
         this.removeTodo(todo);
       }
       toDoStorage.save(this.todos);
+      this.toastMessage = 'Edit a TODO!';
+      showToast();
     },
     cancelEdit: function (todo: {title: string}) {
       this.editedTodo = null;
@@ -82,6 +95,8 @@ export const app = new Vue({
     removeCompleted: function () {
       this.todos = filters.active(this.todos);
       toDoStorage.save(this.todos);
+      this.toastMessage = 'Remove completed TODOs!';
+      showToast();
     }
   },
   directives: {

@@ -3,7 +3,7 @@
   <head>
     <title>myTODOs</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="dist/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
@@ -17,7 +17,6 @@
           placeholder="What needs to be done?"
           v-model="newTodo"
           @keyup.enter.exact="addTodo"
-          @keyup.shift.enter.exact="multiLinesTodo($event)"
         ></textarea>
       </header>
       <section class="main" v-show="todos.length" v-cloak>
@@ -53,20 +52,21 @@
           <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
         </span>
         <ul class="filters">
-          <li><a href="#/all" :class="{ selected: visibility == 'all' }">All</a></li>
-          <li><a href="#/active" :class="{ selected: visibility == 'active' }">Active</a></li>
-          <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Completed</a></li>
+          <li><a href="#/all" :class="{ selected: visibility === 'all' }">All</a></li>
+          <li><a href="#/active" :class="{ selected: visibility === 'active' }">Active</a></li>
+          <li><a href="#/completed" :class="{ selected: visibility === 'completed' }">Completed</a></li>
         </ul>
-        <button class="clear-completed" @click.stop="removeCompleted" v-show="todos.length > remaining">
+        <button class="clear-completed" @click.stop="removeCompleted" v-show="visibility !== 'active' && completedTodos > 0">
           Clear completed
         </button>
       </footer>
+      <div class="toast">{{ toastMessage }}</div>
     </section>
     <footer class="info">
       <p>Enter: Complete a todo creating/editing in textarea</p>
       <p>Shift + Enter: Enable multiple lines in textarea</p>
       <p>Double-click: Enable todo editing of each</p>
-    </footer>    
-    <script src="dist/main.js"></script>
+    </footer>  
+    <script src="main.js"></script>
   </body>
 </html>

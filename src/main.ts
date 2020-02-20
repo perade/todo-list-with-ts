@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import './styles.scss';
 import { app } from './app';
 import { filters } from './utils';
