@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
-    'main': './src/main.ts'
+    app: ['babel-polyfill', './src/main.ts']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -46,5 +46,12 @@ module.exports = {
     },
     extensions: ['.js', '.ts']
   },
-  mode: 'development'
+  mode: 'development',
+  devServer: {
+    contentBase: path.resolve(__dirname, 'dist'),
+    inline: true,
+    hot: true,
+    host: "localhost",
+    port: 3000
+  }
 };
