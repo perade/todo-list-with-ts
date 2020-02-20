@@ -26,4 +26,4 @@ export function getCurrentTime () {
   }:${
     seconds < 10 ? `0${seconds}` : seconds
   }`;
-}
+};
