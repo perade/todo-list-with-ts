@@ -1,23 +1,8 @@
 import Vue from 'vue';
 import { ToDoList } from './storage';
-import { getCurrentTime } from './utils';
+import { getCurrentTime, filters } from './utils';
 
 const toDoStorage = new ToDoList();
-const filters = {
-  all: function (todos: []) {
-    return todos;
-  },
-  active: function (todos: []) {
-    return todos.filter(function (todo: {completed: boolean}) {
-      return !todo.completed;
-    })
-  },
-  completed: function (todos: []) {
-    return todos.filter(function (todo: {completed: boolean}) {
-      return todo.completed;
-    })
-  }
-}
 
 export const app = new Vue({
   data: {
@@ -27,20 +12,12 @@ export const app = new Vue({
     visibility: 'all',
     uid: toDoStorage.getUid()
   },
-  // watch: {
-  //   todos: {
-  //     handler: function (todos: []) {
-  //       toDoStorage.save(todos);
-  //     },
-  //     deep: true
-  //   }
-  // },
   computed: {
     filteredTodos: function () {
       return filters[this.visibility](this.todos);
     },
     remaining: function () {
-      return filters.active(this.todos).length;
+      return filters[this.visibility](this.todos).length;
     }
   },
   filters: {
@@ -64,7 +41,7 @@ export const app = new Vue({
       toDoStorage.save(this.todos);
     },
     addTodo: function () {
-      const value = this.newTodo && this.newTodo.trim();
+      const value = this.newTodo;
       if (!value) {
         return;
       }
@@ -74,12 +51,6 @@ export const app = new Vue({
         completed: false,
         time: getCurrentTime()
       });
-      // this.todos.unshift({
-      //   id: this.uid++,
-      //   title: value,
-      //   completed: false,
-      //   time: getCurrentTime()
-      // });
       this.newTodo = '';
       this.sortToDos();
       toDoStorage.save(this.todos);
@@ -110,6 +81,7 @@ export const app = new Vue({
     },
     removeCompleted: function () {
       this.todos = filters.active(this.todos);
+      toDoStorage.save(this.todos);
     }
   },
   directives: {
@@ -120,14 +92,3 @@ export const app = new Vue({
     }
   }
 });
-
-// handle routing
-export function onHashChange () {
-  const visibility = window.location.hash.replace(/#\/?/, '');
-  if (filters[visibility]) {
-    app.visibility = visibility;
-  } else {
-    window.location.hash = '';
-    app.visibility = 'all';
-  }
-};

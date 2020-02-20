@@ -10,22 +10,41 @@
     <section class="todoapp">
       <header class="header">
         <h1>myTODOs</h1>
-        <textarea class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" v-model="newTodo" @keyup.enter="addTodo"></textarea>
+        <textarea
+          class="new-todo"
+          autofocus
+          autocomplete="off"
+          placeholder="What needs to be done?"
+          v-model="newTodo"
+          @keyup.enter.exact="addTodo"
+          @keyup.shift.enter.exact="multiLinesTodo($event)"
+        ></textarea>
       </header>
       <section class="main" v-show="todos.length" v-cloak>
         <ul class="todo-list">
           <li
             v-for="(todo, index) in filteredTodos"
             class="todo"
-            :key="todo.id"
             :class="{ completed: todo.completed, editing: todo == editedTodo }"
+            :key="todo.id"
           >
             <div class="view">
-              <input class="toggle" type="checkbox" :checked="todo.completed" @input="toggleStatus(index, todo.id, $event.target.checked)">
-              <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-              <button class="destroy" @click="removeTodo(todo)"></button>
+              <input class="toggle" type="checkbox" :checked="todo.completed" @input.stop="toggleStatus(index, todo.id, $event.target.checked)">
+              <label>{{ `[ ${todo.time} ]` }}</label>
+              <template v-for="title of todo.title.split('\n')">
+                <label @dblclick="editTodo(todo)">{{ title }}</label>
+              </template>
+              <button class="destroy" @click.stop="removeTodo(todo)"></button>
             </div>
-            <textarea class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)"></textarea>
+            <textarea
+              class="edit"
+              type="text"
+              v-model="todo.title"
+              v-todo-focus="todo == editedTodo"
+              @blur="doneEdit(todo)"
+              @keyup.enter.exact="doneEdit(todo)"
+              @keyup.esc="cancelEdit(todo)"
+            ></textarea>
           </li>
         </ul>
       </section>
@@ -38,13 +57,15 @@
           <li><a href="#/active" :class="{ selected: visibility == 'active' }">Active</a></li>
           <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Completed</a></li>
         </ul>
-        <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+        <button class="clear-completed" @click.stop="removeCompleted" v-show="todos.length > remaining">
           Clear completed
         </button>
       </footer>
     </section>
     <footer class="info">
-      <p>Double-click to edit a todo</p>
+      <p>Enter: Complete a todo creating/editing in textarea</p>
+      <p>Shift + Enter: Enable multiple lines in textarea</p>
+      <p>Double-click: Enable todo editing of each</p>
     </footer>    
     <script src="dist/main.js"></script>
   </body>
