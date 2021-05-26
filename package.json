@@ -24,7 +24,7 @@
     "@babel/polyfill": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "babel-polyfill": "^6.26.0",
-    "browserslist": "^4.8.7",
+    "browserslist": "^4.16.5",
     "css-loader": "^3.4.2",
     "lite-server": "^2.5.4",
     "mini-css-extract-plugin": "^0.9.0",
